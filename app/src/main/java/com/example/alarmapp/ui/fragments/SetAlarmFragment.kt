@@ -9,8 +9,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.alarmapp.R
+import com.example.alarmapp.data.database.AlarmDatabase
 import com.example.alarmapp.data.models.AlarmItem
+import com.example.alarmapp.data.repository.AlarmRepository
 import com.example.alarmapp.databinding.FragmentSetAlarmBinding
+import com.example.alarmapp.ui.AlarmViewModelFactory
 import com.example.alarmapp.ui.viewmodels.AlarmViewModel
 import com.example.alarmapp.utils.AlarmHelper
 import com.example.alarmapp.utils.CalendarUtil
@@ -33,8 +36,17 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_set_alarm, container, false)
 
+        // get a reference to the application context. we need application context to
+        // create database instance
+        val application = requireNotNull(this.activity).application
+        // create database and get reference to Dao Object
+        val dataDao = AlarmDatabase.getDatabaseInstance(application).alarmDao()
+        // get reference to the repository class
+        val repository = AlarmRepository(dataDao)
+        //get instance of the viewModelFactory
+        val viewModelFactory = AlarmViewModelFactory(repository)
         // initialize the ViewModel class
-        viewModel = ViewModelProvider(this).get(AlarmViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(AlarmViewModel::class.java)
 
 
         // if the buttons are clicked use the implemented (View.OnClickListener) interface
