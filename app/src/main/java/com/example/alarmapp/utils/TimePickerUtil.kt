@@ -24,4 +24,18 @@ object TimePickerUtil {
         // return the two variables
         return Pair(hour, minute)
     }
+
+    fun setTime(timePicker: TimePicker, hour: Int?, minute: Int?) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            timePicker.apply {
+                this.hour = hour ?: 12
+                this.minute = minute ?: 0
+            }
+        } else {
+            timePicker.apply {
+                currentHour = hour ?: 12
+                currentMinute = minute ?: 0
+            }
+        }
+    }
 }

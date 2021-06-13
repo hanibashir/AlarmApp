@@ -1,5 +1,6 @@
 package com.example.alarmapp.ui.adapters
 
+import android.app.AlarmManager
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.example.alarmapp.data.models.AlarmItem
 import com.example.alarmapp.ui.interfaces.AlarmViewsOnClickListener
 import com.example.alarmapp.utils.AlarmDiffUtil
 import com.example.alarmapp.utils.CalendarUtil
+import java.util.*
 
 
 const val TAG = "adapter"
@@ -32,15 +34,38 @@ class AlarmsListAdapter(
         private val tvTime: TextView = itemView.findViewById(R.id.item_tv_alarm_time)
         private val switchBtn: SwitchCompat = itemView.findViewById(R.id.item_btn_switch)
         private val showItemOptions: TextView = itemView.findViewById(R.id.item_show_options_menu)
+        private val tvRemainTime: TextView = itemView.findViewById(R.id.item_tv_alarm_remain_time)
 
         // get views from data binding
         fun bind(alarmItem: AlarmItem, clickListener: AlarmViewsOnClickListener, context: Context) {
             // format alarm time
             val alarmTime = CalendarUtil.formatCalendarTime(alarmItem.hour, alarmItem.minute)
+            // set calendar time
+            val alarmDate = CalendarUtil.setCalendar(alarmItem.hour, alarmItem.minute)
+            // if alarm time is passed add one day
+            if (alarmDate.before(Calendar.getInstance())) alarmDate.add(Calendar.DATE, 1)
+
+            val remainTime = alarmDate.timeInMillis - System.currentTimeMillis()
+
+            //val seconds = (remainTime / 1000) % 60
+            val minutes = (remainTime / (1000 * 60) % 60)
+            val hours = (remainTime / (1000 * 60 * 60) % 24)
+
+            val remainTimeText =
+                if (hours != 0L) "After: $hours Hours and $minutes Minutes" else "After: $minutes Minutes"
 
             // set item views values
-            tvLabel.text = alarmItem.alarmLabel
-            tvDay.text = alarmItem.alarmDay
+            tvLabel.text = (alarmItem.alarmLabel)
+
+            if (alarmItem.isScheduled) {
+                tvDay.visibility = View.VISIBLE
+                tvRemainTime.visibility = View.VISIBLE
+                tvDay.text = alarmItem.alarmDay
+                tvRemainTime.text = remainTimeText
+            } else {
+                tvDay.visibility = View.GONE
+                tvRemainTime.visibility = View.GONE
+            }
             tvTime.text = alarmTime
             switchBtn.isChecked = alarmItem.isScheduled
             // switch on change state listener
@@ -49,7 +74,6 @@ class AlarmsListAdapter(
             }
             // options menu onclick listener
             showItemOptions.setOnClickListener { popupMenu(it, clickListener, context) }
-
         }
 
         private fun popupMenu(
@@ -93,9 +117,8 @@ class AlarmsListAdapter(
     }
 
     // on create view holder
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
-        return AlarmViewHolder.from(parent)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder =
+        AlarmViewHolder.from(parent)
 
 
     // on bind view holder

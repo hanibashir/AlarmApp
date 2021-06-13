@@ -2,37 +2,26 @@
     <!-- Base application theme. -->
     <style name="Theme.AlarmApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/deep_sky_blue</item>
-        <item name="colorPrimaryVariant">@color/medium_blue</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/grey</item>
+        <item name="colorPrimaryVariant">@color/dark_status_bar</item>
+        <item name="colorOnPrimary">@color/dark_orange</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/deep_sky_blue</item>
-        <item name="colorSecondaryVariant">@color/deep_sky_blue</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/dark_orange</item>
+        <item name="colorSecondaryVariant">@color/dark_orange</item>
+        <item name="colorOnSecondary">@color/white</item>
+
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
 
+        <!-- change action bar background color -->
+        <item name="colorSurface">@color/black</item>
+        <!-- edit text background -->
+        <item name="backgroundTint">@color/white</item>
+
 
     </style>
 
-    <!-- Custom style: No Action bar, transparent status bar -->
-    <style name="Theme.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/deep_sky_blue</item>
-        <item name="colorPrimaryVariant">@color/medium_blue</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/deep_sky_blue</item>
-        <item name="colorSecondaryVariant">@color/deep_sky_blue</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-
-        <!-- No Action bar, transparent status bar -->
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
 
 </resources>

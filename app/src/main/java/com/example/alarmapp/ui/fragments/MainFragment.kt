@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.alarmapp.R
@@ -112,6 +113,7 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
             val updatedAlarm = alarmHelper.cancelAlarm(alarmItem)
             // update alarm item on database
             viewModel.updateAlarm(updatedAlarm)
+            rvMain.post { adapter.notifyItemChanged(position) }
 
         } else {
             // call the scheduleAlarm method to schedule the alarm and
@@ -144,6 +146,13 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
                 // delete the alarm item from database
                 viewModel.deleteAlarm(alarmItem)
             }
+            R.id.edit_alarm -> {
+                findNavController().navigate(
+                    MainFragmentDirections.actionMainFragmentToSetAlarmFragment(
+                        alarmList[position]
+                    )
+                )
+            }
         }
     }
 
@@ -163,18 +172,20 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
                 // before deleting the alarms we will through all alarms
                 // and check if of them is already scheduled. if yes then cancel it
                 if (alarmList.isNotEmpty()) {
-                    DialogHelper.showDialog(requireContext(), object : DialogHelper.DialogInterface {
-                        override fun getRespond(respond: Int) {
-                            if (respond == 1) {
-                                val alarmHelper = AlarmHelper(requireContext())
-                                alarmList.forEach {
-                                    if (it.isScheduled) alarmHelper.cancelAlarm(it)
+                    DialogHelper.showDialog(
+                        requireContext(),
+                        object : DialogHelper.DialogInterface {
+                            override fun getRespond(respond: Int) {
+                                if (respond == 1) {
+                                    val alarmHelper = AlarmHelper(requireContext())
+                                    alarmList.forEach {
+                                        if (it.isScheduled) alarmHelper.cancelAlarm(it)
+                                    }
+                                    // if yes clicked delete alarm item
+                                    viewModel.deleteAllAlarms()
                                 }
-                                // if yes clicked delete alarm item
-                                viewModel.deleteAllAlarms()
                             }
-                        }
-                    })
+                        })
                 } else {
                     Messages.showSnack(binding.root, "List is empty")
                 }

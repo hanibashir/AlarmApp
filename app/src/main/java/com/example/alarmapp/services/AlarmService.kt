@@ -9,8 +9,6 @@ import androidx.core.app.NotificationCompat
 import com.example.alarmapp.R
 import com.example.alarmapp.data.database.AlarmDatabase
 import com.example.alarmapp.data.repository.AlarmRepository
-import com.example.alarmapp.ui.activities.RingActivity
-import com.example.alarmapp.utils.Constants
 import com.example.alarmapp.utils.Constants.Companion.ACTION_START_SERVICE
 import com.example.alarmapp.utils.Constants.Companion.ALARM_LABEL
 import com.example.alarmapp.utils.Constants.Companion.ALARM_TIME
@@ -44,8 +42,7 @@ class AlarmService : Service() {
 
                     // create notification
                     val notification = createNotification(alarmName, alarmTime)
-
-                    updateAlarmItem(alarmId)
+                    
 
                     // AutoCancel does not work when service is still on foreground.
                     // Try remove service from foreground:
@@ -62,71 +59,34 @@ class AlarmService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun updateAlarmItem(alarmId: Long) {
-        val dao = AlarmDatabase.getDatabaseInstance(application).alarmDao()
-        val repository = AlarmRepository(dao)
-
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.updateScheduled(false, alarmId)
-        }
-
-    }
 
     private fun createNotification(
         alarmName: String?,
         alarmTime: String?
     ): Notification {
 
-        // notification intent
-        val notificationIntent = Intent(this, RingActivity::class.java).apply {
-            putExtra(ALARM_LABEL, alarmName)
-            putExtra(ALARM_TIME, alarmTime)
-        }
-
-        // we need two pending intents to ship with notification,
-        // one to open RingActivity, and the other to stop the service if
-        // the notification is swiped or cleared. so,  we create them in
-        // separate method to keep the code clean and use the return values of this method.
-        val (ringPendingIntent, deletePendingIntent) = notificationPendingIntents(
-            notificationIntent
-        )
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notifications)
             .setContentTitle(alarmName)
             .setContentText(alarmTime)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(ringPendingIntent)
-            .setDeleteIntent(deletePendingIntent)
+            .setDeleteIntent(notificationPendingIntents())
             .setAutoCancel(true)
             .build()
     }
 
-    // create two pending intents. one if the user tapped on the notification message,
-    // and the other if the dismissed the notification
-    private fun notificationPendingIntents(
-        notificationIntent: Intent
-    ): Pair<PendingIntent,PendingIntent> {
-        // when notification clicked get RingActivity
-        // use update flag to only update the current intent extra if
-        // the intent is present and not replace it
-        val ringPendingIntent = PendingIntent.getActivity(
-            this,
-            0,
-            notificationIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        // if the notification is swiped or cleared
+    // if the user dismissed the notification stop service
+    private fun notificationPendingIntents(): PendingIntent {
+        // if the notification is swiped or cleared stop service
         val deleteIntent = Intent(this, AlarmService::class.java).apply {
             action = ACTION_STOP_SERVICE
         }
-        val deletePendingIntent = PendingIntent.getService(
+        return PendingIntent.getService(
             this,
             0,
             deleteIntent,
             PendingIntent.FLAG_CANCEL_CURRENT
         )
-        return Pair(ringPendingIntent, deletePendingIntent)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
