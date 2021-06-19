@@ -16,17 +16,23 @@ class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
 
-        val alarmName = intent?.getStringExtra(ALARM_LABEL)
-        val alarmTime = intent?.getStringExtra(ALARM_TIME)
-        val alarmId = intent?.getLongExtra(ALARM_ID, 0)
+        when (intent?.action) {
+            ACTION_ALARM_RECEIVER -> {
+                val alarmName = intent.getStringExtra(ALARM_LABEL)
+                val alarmTime = intent.getStringExtra(ALARM_TIME)
+                val alarmId = intent.getLongExtra(ALARM_ID, 0)
 
-        val serviceIntent = Intent(context, AlarmService::class.java).apply {
-            action = ACTION_START_SERVICE
-            putExtra(ALARM_LABEL, alarmName)
-            putExtra(ALARM_TIME, alarmTime)
-            putExtra(ALARM_ID, alarmId)
+                val serviceIntent = Intent(context, AlarmService::class.java).apply {
+                    action = ACTION_START_SERVICE
+                    putExtra(ALARM_LABEL, alarmName)
+                    putExtra(ALARM_TIME, alarmTime)
+                    putExtra(ALARM_ID, alarmId)
+                }
+
+                // start service
+                ContextCompat.startForegroundService(context, serviceIntent)
+            }
+
         }
-
-        ContextCompat.startForegroundService(context, serviceIntent)
     }
 }

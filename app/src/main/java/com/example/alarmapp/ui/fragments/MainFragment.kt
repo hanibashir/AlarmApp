@@ -114,6 +114,7 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
             // update alarm item on database
             viewModel.updateAlarm(updatedAlarm)
             rvMain.post { adapter.notifyItemChanged(position) }
+            Messages.createSnack(binding.root, getString(R.string.alarm_cancelled))
 
         } else {
             // call the scheduleAlarm method to schedule the alarm and
@@ -129,6 +130,7 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
             // the runnable block (adapter.notifyItemChanged(position)),
             // to the View (RecyclerView) message queue, and run it on user interface (UI)
             rvMain.post { adapter.notifyItemChanged(position) }
+            Messages.showScheduledMessage(binding.root, alarmItem, getString(R.string.scheduled))
 
         }
     }
@@ -145,6 +147,7 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
                 if (alarmItem.isScheduled) alarmHelper.cancelAlarm(alarmItem)
                 // delete the alarm item from database
                 viewModel.deleteAlarm(alarmItem)
+                Messages.createSnack(binding.root, getString(R.string.alarm_deleted))
             }
             R.id.edit_alarm -> {
                 findNavController().navigate(
@@ -175,7 +178,7 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
                     DialogHelper.showDialog(
                         requireContext(),
                         object : DialogHelper.DialogInterface {
-                            override fun getRespond(respond: Int) {
+                            override fun onRespond(respond: Int) {
                                 if (respond == 1) {
                                     val alarmHelper = AlarmHelper(requireContext())
                                     alarmList.forEach {
@@ -183,12 +186,16 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
                                     }
                                     // if yes clicked delete alarm item
                                     viewModel.deleteAllAlarms()
+                                    Messages.createSnack(binding.root, getString(R.string.delete_all))
                                 }
                             }
                         })
                 } else {
-                    Messages.showSnack(binding.root, "List is empty")
+                    Messages.createSnack(binding.root, getString(R.string.delete_empty_list))
                 }
+            }
+            R.id.alarm_settings -> {
+                findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
             }
         }
         return super.onOptionsItemSelected(item)

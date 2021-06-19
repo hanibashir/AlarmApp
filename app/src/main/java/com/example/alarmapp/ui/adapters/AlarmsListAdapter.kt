@@ -39,11 +39,11 @@ class AlarmsListAdapter(
         // get views from data binding
         fun bind(alarmItem: AlarmItem, clickListener: AlarmViewsOnClickListener, context: Context) {
             // format alarm time
-            val alarmTime = CalendarUtil.formatCalendarTime(alarmItem.hour, alarmItem.minute)
+            val alarmTime = CalendarUtil().formatCalendarTime(alarmItem.hour, alarmItem.minute)
             // set calendar time
-            val alarmDate = CalendarUtil.setCalendar(alarmItem.hour, alarmItem.minute)
-            // if alarm time is passed add one day
-            if (alarmDate.before(Calendar.getInstance())) alarmDate.add(Calendar.DATE, 1)
+            val alarmDate = CalendarUtil().setCalendar(alarmItem.hour, alarmItem.minute)
+
+            val alarmDay = CalendarUtil().getAlarmDay(alarmDate)
 
             val remainTime = alarmDate.timeInMillis - System.currentTimeMillis()
 
@@ -60,7 +60,7 @@ class AlarmsListAdapter(
             if (alarmItem.isScheduled) {
                 tvDay.visibility = View.VISIBLE
                 tvRemainTime.visibility = View.VISIBLE
-                tvDay.text = alarmItem.alarmDay
+                tvDay.text = alarmDay
                 tvRemainTime.text = remainTimeText
             } else {
                 tvDay.visibility = View.GONE
@@ -102,7 +102,6 @@ class AlarmsListAdapter(
         }
 
         companion object {
-
             fun from(parent: ViewGroup): AlarmViewHolder {
                 val view = LayoutInflater.from(parent.context).inflate(
                     R.layout.alarm_item,

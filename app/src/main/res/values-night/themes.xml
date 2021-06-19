@@ -12,14 +12,15 @@
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
         <!-- Customize your theme here. -->
-
         <!-- change action bar background color -->
-        <item name="colorSurface">@color/black</item>
-        <!-- edit text background -->
-        <item name="backgroundTint">@color/white</item>
+        <item name="colorSurface">@color/grey</item>
 
+    </style>
 
+    <style name="AlertDialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="colorPrimary">@color/dark_orange</item>
     </style>
 
 

@@ -6,7 +6,7 @@ import java.util.*
 
 private const val TAG = "calendarUtil"
 
-object CalendarUtil {
+class CalendarUtil {
 
     fun setCalendar(hour: Int, minute: Int, second: Int = 0): Calendar {
 

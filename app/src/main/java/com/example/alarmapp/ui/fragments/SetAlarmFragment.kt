@@ -1,12 +1,10 @@
 package com.example.alarmapp.ui.fragments
 
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -20,6 +18,7 @@ import com.example.alarmapp.ui.AlarmViewModelFactory
 import com.example.alarmapp.ui.viewmodels.AlarmViewModel
 import com.example.alarmapp.utils.AlarmHelper
 import com.example.alarmapp.utils.CalendarUtil
+import com.example.alarmapp.utils.Messages
 import com.example.alarmapp.utils.TimePickerUtil
 import java.util.*
 import kotlin.random.Random
@@ -98,17 +97,18 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
         // get time picker time
         val (hour, minute) = TimePickerUtil.getTime(binding.timePicker)
         // format alarm time
-        val alarmTimeString = CalendarUtil.formatCalendarTime(hour, minute)
+        val alarmTimeString = CalendarUtil().formatCalendarTime(hour, minute)
         // set calendar time
-        val alarmDate = CalendarUtil.setCalendar(hour, minute, 0)
+        val alarmDate = CalendarUtil().setCalendar(hour, minute, 0)
         // if alarm time is passed add one day
         if (alarmDate.before(Calendar.getInstance())) alarmDate.add(Calendar.DATE, 1)
         // get the alarm day
-        val alarmDay = CalendarUtil.getAlarmDay(alarmDate)
+        val alarmDay = CalendarUtil().getAlarmDay(alarmDate)
         // set random number for the alarm id field in database
 
-        if (alarmItem == null) insertAlarm(label, hour, minute, alarmDay, alarmHelper)
-        else updateAlarm(alarmItem, label, hour, minute, alarmDay, alarmHelper)
+        if (alarmItem == null) insertAndScheduleAlarm(label, hour, minute, alarmDay, alarmHelper)
+        else updateAndScheduleAlarm(alarmItem, label, hour, minute, alarmDay, alarmHelper)
+
 
 
         // navigate back to the main fragment
@@ -116,7 +116,7 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
 
     }
 
-    private fun insertAlarm(
+    private fun insertAndScheduleAlarm(
         label: String,
         hour: Int,
         minute: Int,
@@ -140,9 +140,11 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
 
         // pass the alarm object to view model
         viewModel.insertAlarm(alarmItem)
+
+        Messages.showScheduledMessage(binding.root, alarmItem, getString(R.string.scheduled))
     }
 
-    private fun updateAlarm(
+    private fun updateAndScheduleAlarm(
         alarmItem: AlarmItem, label: String,
         hour: Int,
         minute: Int,
@@ -162,6 +164,7 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
 
         // update alarm item
         viewModel.updateAlarm(alarmItem)
+        Messages.showScheduledMessage(binding.root, alarmItem, getString(R.string.scheduled))
     }
 
 

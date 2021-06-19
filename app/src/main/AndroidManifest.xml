@@ -2,17 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.alarmapp">
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
-        android:name=".application.BaseApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AlarmApp">
-        <activity android:name="com.example.alarmapp.ui.activities.MainActivity">
+        <activity android:name=".ui.activities.RingActivity" />
+        <activity android:name=".ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,9 +22,9 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.example.alarmapp.broadcastreceivers.AlarmReceiver"/>
+        <receiver android:name=".broadcastreceivers.AlarmReceiver" />
 
-        <service android:name="com.example.alarmapp.services.AlarmService" />
+        <service android:name=".services.AlarmService" />
     </application>
 
 </manifest>

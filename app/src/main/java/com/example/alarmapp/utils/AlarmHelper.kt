@@ -24,7 +24,7 @@ class AlarmHelper(private val context: Context) {
     fun scheduleAlarm(alarmItem: AlarmItem): AlarmItem {
 
         // set calendar time
-        val alarmDate = CalendarUtil.setCalendar(alarmItem.hour, alarmItem.minute)
+        val alarmDate = CalendarUtil().setCalendar(alarmItem.hour, alarmItem.minute)
 
         // if alarm time is passed add one day
         if (alarmDate.before(Calendar.getInstance())) alarmDate.add(Calendar.DATE, 1)
@@ -45,9 +45,6 @@ class AlarmHelper(private val context: Context) {
         // change isScheduled field value before updating the alarm item in database
         alarmItem.isScheduled = true
 
-        // show toast message
-        showMessage(alarmItem, "Scheduled")
-
         return alarmItem
     }
 
@@ -60,9 +57,6 @@ class AlarmHelper(private val context: Context) {
 
         alarmItem.isScheduled = false
 
-        // show toast message
-        showMessage(alarmItem, "Cancelled")
-
         return alarmItem
     }
 
@@ -70,7 +64,7 @@ class AlarmHelper(private val context: Context) {
     private fun alarmPendingIntent(alarmItem: AlarmItem): PendingIntent {
         // format alarm time and return it as string like: 08:00am or 20:00 depending
         // on the user device settings
-        val alarmTimeString = CalendarUtil.formatCalendarTime(alarmItem.hour, alarmItem.minute)
+        val alarmTimeString = CalendarUtil().formatCalendarTime(alarmItem.hour, alarmItem.minute)
 
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             action = ACTION_ALARM_RECEIVER
@@ -85,17 +79,5 @@ class AlarmHelper(private val context: Context) {
     }
 
 
-    private fun showMessage(alarmItem: AlarmItem, state: String) {
-        // we already set the calendar and saved to alarmDate variable, but after
-        // we check if the time is passed, alarmDate variable value will not change,
-        // so, we need to set the calendar again
-        val calendar = CalendarUtil.setCalendar(alarmItem.hour, alarmItem.minute, 0)
-        alarmItem.alarmDay = CalendarUtil.getAlarmDay(calendar)
-        val alarmTimeString = CalendarUtil.formatCalendarTime(alarmItem.hour, alarmItem.minute)
 
-        Messages.showToast(
-            context,
-            "Alarm $state for ${alarmItem.alarmDay} at: $alarmTimeString"
-        )
-    }
 }

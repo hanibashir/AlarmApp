@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="Alarm Settings">
+
+        <Preference
+            android:title="@string/pref_title_ringtone"
+            android:defaultValue="content://settings/system/notification_sound"
+            android:key="@string/key_alarm_ringtone"
+            android:ringtoneType="notification"
+            android:summary="@string/summary_choose_ringtone" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_vibrate"
+            android:summary="@string/summary_vibrate"
+            android:title="@string/title_vibrate" />
+
+        <CheckBoxPreference
+            android:title="@string/title_dark_theme"
+            android:defaultValue="true"
+            android:key="@string/key_switch_theme"
+            android:summary="@string/summary_enable_dark_theme" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_header_about">
+
+        <Preference
+            android:selectable="false"
+            android:summary="@string/summary_about" />
+
+        <Preference
+            android:summary="@string/app_version"
+            android:title="@string/title_version" />
+
+        <Preference
+            android:title="@string/title_send_feedback"
+            android:key="@string/key_send_feedback"
+            android:summary="@string/summary_support" />
+
+        <!-- preference opens url in browser -->
+        <Preference
+            android:title="@string/title_faq"
+            android:summary="@string/summary_faq">
+<!--            <intent-->
+<!--                android:action="android.intent.action.VIEW"-->
+<!--                android:data="@string/url_faq" />-->
+        </Preference>
+
+        <Preference android:title="@string/privacy_policy">
+<!--            <intent-->
+<!--                android:action="android.intent.action.VIEW"-->
+<!--                android:data="" />-->
+        </Preference>
+
+        <Preference android:title="@string/title_terms">
+<!--            <intent-->
+<!--                android:action="android.intent.action.VIEW"-->
+<!--                android:data="" />-->
+        </Preference>
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
