@@ -2,39 +2,48 @@ package com.example.alarmapp.ui.fragments
 
 import android.app.AlarmManager
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import androidx.databinding.DataBindingUtil
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.alarmapp.R
-import com.example.alarmapp.data.database.AlarmDatabase
-import com.example.alarmapp.data.models.AlarmItem
+import com.example.alarmapp.data.AlarmItem
 import com.example.alarmapp.data.repository.AlarmRepository
-import com.example.alarmapp.databinding.FragmentMainBinding
-import com.example.alarmapp.ui.AlarmViewModelFactory
+import com.example.alarmapp.data.room.AlarmDatabase
+import com.example.alarmapp.databinding.FragmentAlarmsBinding
+import com.example.alarmapp.helpers.AlarmHelper
+import com.example.alarmapp.helpers.DialogHelper
 import com.example.alarmapp.ui.adapters.AlarmsListAdapter
 import com.example.alarmapp.ui.interfaces.AlarmViewsOnClickListener
 import com.example.alarmapp.ui.viewmodels.AlarmViewModel
-import com.example.alarmapp.utils.AlarmHelper
-import com.example.alarmapp.utils.DialogHelper
+import com.example.alarmapp.ui.viewmodels.AlarmViewModelFactory
+import com.example.alarmapp.utils.Extensions.isDarkTheme
 import com.example.alarmapp.utils.Messages
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.navigation.NavigationView
 
 
 private const val TAG = "mainFragment"
 
-class MainFragment : Fragment(), AlarmViewsOnClickListener {
+class AlarmsFragment : Fragment(), AlarmViewsOnClickListener, Toolbar.OnMenuItemClickListener {
 
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentAlarmsBinding
     private lateinit var viewModel: AlarmViewModel
     private var alarmList = mutableListOf<AlarmItem>()
     private lateinit var alarmManager: AlarmManager
     private lateinit var adapter: AlarmsListAdapter
     private lateinit var rvMain: RecyclerView
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var drawer: DrawerLayout
+    private lateinit var navView: NavigationView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,8 +51,21 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
     ): View {
 
         // Inflate the layout for this fragment
-        binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
+        binding = FragmentAlarmsBinding.inflate(inflater, container, false)
+
+        // toolbar
+        toolbar = binding.toolbar
+        toolbar.setOnMenuItemClickListener(this)
+        // drawer
+        drawer = binding.drawerLayout
+        navView = binding.navigationView
+        openCloseDrawer()
+
+        // if dark theme is enabled change image
+        if (requireContext().isDarkTheme()) {
+            //val image = ContextCompat.getDrawable(requireContext(), )
+            binding.ivAlarms.setImageResource(R.drawable.moon)
+        }
 
         // get a reference to the application context. we need application context to
         // create database instance
@@ -64,41 +86,61 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
         adapter = AlarmsListAdapter(requireContext(), this)
 
         // init recycler view
-        rvMain = binding.rvMainFragment
+        rvMain = binding.rvAlarmsFragment
         // set layout for recyclerview
         rvMain.layoutManager = LinearLayoutManager(context)
 
         // set the recyclerview on main_fragment adapter to the adapter class
         rvMain.adapter = adapter
 
-
         // get and observe all alarms from view model
         viewModel.alarms().observe(viewLifecycleOwner, { listOfAlarms ->
 
+            // hide empty list message
+            binding.tvNoAlarms.visibility = View.GONE
+            // assign the list to the list in this fragment to use it
+            // later to edit or delete items
             this.alarmList = listOfAlarms.toMutableList()
             // send the alarms list to the adapter by
             // using submitList method from ListAdapter class
             adapter.submitList(listOfAlarms)
-
-            // if alarms list is empty
-            if (listOfAlarms.isEmpty()) binding.tvNoAlarms.visibility = View.VISIBLE
-            else binding.tvNoAlarms.visibility = View.GONE
-
+            // if alarms list is empty show empty list message
+            if (listOfAlarms.isEmpty())
+                binding.tvNoAlarms.visibility = View.VISIBLE
         })
 
-        // we get a reference of the button in FragmentMainBinding class which
-        // auto generated by data binding library
-        // when the user clicked this floating button, we navigate to the add new alarm fragment
-        // by using navigation library action (action_mainFragment_to_setAlarmFragment)
-        binding.fabAddNewAlarm.setOnClickListener { btn ->
-            btn.findNavController().navigate(R.id.action_mainFragment_to_setAlarmFragment)
+        // add new alarm fab
+        binding.fabAddNewAlarm.setOnClickListener {
+            findNavController().navigate(R.id.action_alarmsFragment_to_setAlarmFragment)
         }
-
-        // fragment has option menu on actionbar
-        setHasOptionsMenu(true)
 
         // returning the root element of the associated xml layout
         return binding.root
+    }
+
+    private fun openCloseDrawer() {
+
+        if (requireContext().isDarkTheme()) {
+            val colorInt = ContextCompat.getColor(requireContext(), R.color.white)
+            val csl = ColorStateList.valueOf(colorInt)
+            navView.itemTextColor = csl
+            navView.itemIconTintList = null
+        }
+
+        navView.setCheckedItem(R.id.drawer_alarms_home)
+
+        toolbar.setNavigationOnClickListener {
+            drawer.open()
+        }
+
+        navView.setNavigationItemSelectedListener { menuItem ->
+            // Handle menu item selected
+            when (menuItem.itemId) {
+                R.id.drawer_settings -> findNavController().navigate(R.id.action_alarmsFragment_to_settingsFragment)
+            }
+            drawer.close()
+            true
+        }
     }
 
     override fun onSwitchToggle(position: Int) {
@@ -130,63 +172,64 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
             // the runnable block (adapter.notifyItemChanged(position)),
             // to the View (RecyclerView) message queue, and run it on user interface (UI)
             rvMain.post { adapter.notifyItemChanged(position) }
-            Messages.showScheduledMessage(binding.root, alarmItem, getString(R.string.scheduled))
+            Messages.showScheduledMessage(binding.root, alarmItem, context)
 
         }
     }
 
-    // for recyclerview item popup menu options
-    override fun onOptionsMenuItemClicked(position: Int, menuItem: MenuItem) {
-        val alarmItem = alarmList[position]
-
-        val alarmHelper = AlarmHelper(requireContext())
-
-        when (menuItem.itemId) {
-            R.id.delete_alarm -> {
-                // cancel alarm if scheduled
-                if (alarmItem.isScheduled) alarmHelper.cancelAlarm(alarmItem)
-                // delete the alarm item from database
-                viewModel.deleteAlarm(alarmItem)
-                Messages.createSnack(binding.root, getString(R.string.alarm_deleted))
-            }
-            R.id.edit_alarm -> {
+    // for recyclerview item buttons
+    override fun onItemButtonClicked(btn: View, position: Int) {
+        when (btn.id) {
+            R.id.btn_edit_alarm -> {
                 findNavController().navigate(
-                    MainFragmentDirections.actionMainFragmentToSetAlarmFragment(
+                    AlarmsFragmentDirections.actionAlarmsFragmentToSetAlarmFragment(
                         alarmList[position]
                     )
                 )
             }
+            R.id.btn_delete_alarm -> {
+                val alarmItem = alarmList[position]
+                val alarmHelper = AlarmHelper(requireContext())
+                // cancel alarm if scheduled
+                if (alarmItem.isScheduled) alarmHelper.cancelAlarm(alarmItem)
+                // snack bar
+                Messages.createSnack(binding.root, getString(R.string.alarm_deleted))
+                // delete the alarm item from database
+                viewModel.deleteAlarm(alarmItem)
+
+            }
         }
     }
 
-    // create fragment action bar menu, in order this to work we need to call,
-    // setHasOptionsMenu(true) on fragment onCreateView()
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.action_bar_menu, menu)
-    }
-
-    // if the user selected on of the action bar menu items
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+    // material toolbar menu items
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        when (item?.itemId) {
             R.id.delete_all_alarm -> {
                 // ask user for confirmation by using
                 // AlertDialog to show popup message
-                // before deleting the alarms we will through all alarms
-                // and check if of them is already scheduled. if yes then cancel it
                 if (alarmList.isNotEmpty()) {
                     DialogHelper.showDialog(
                         requireContext(),
                         object : DialogHelper.DialogInterface {
-                            override fun onRespond(respond: Int) {
-                                if (respond == 1) {
-                                    val alarmHelper = AlarmHelper(requireContext())
+                            override fun onRespond(respond: Boolean) {
+                                if (respond) {
+                                    // before deleting the alarms need to loop over all alarms
+                                    // and check if any of them is already scheduled.
+                                    // if yes then cancel it
                                     alarmList.forEach {
-                                        if (it.isScheduled) alarmHelper.cancelAlarm(it)
+                                        if (it.isScheduled) {
+                                            val alarmHelper = AlarmHelper(requireContext())
+                                            alarmHelper.cancelAlarm(it)
+                                        }
                                     }
+                                    // snack bar
+                                    Messages.createSnack(
+                                        binding.root,
+                                        getString(R.string.delete_all)
+                                    )
                                     // if yes clicked delete alarm item
                                     viewModel.deleteAllAlarms()
-                                    Messages.createSnack(binding.root, getString(R.string.delete_all))
+
                                 }
                             }
                         })
@@ -195,9 +238,9 @@ class MainFragment : Fragment(), AlarmViewsOnClickListener {
                 }
             }
             R.id.alarm_settings -> {
-                findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
+                findNavController().navigate(R.id.action_alarmsFragment_to_settingsFragment)
             }
         }
-        return super.onOptionsItemSelected(item)
+        return true
     }
 }

@@ -1,10 +1,8 @@
-package com.example.alarmapp.ui
+package com.example.alarmapp.ui.viewmodels
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.alarmapp.data.repository.AlarmRepository
-import com.example.alarmapp.ui.viewmodels.AlarmViewModel
 
 class AlarmViewModelFactory(private val repository: AlarmRepository) :
     ViewModelProvider.Factory {

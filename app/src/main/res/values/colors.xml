@@ -9,10 +9,9 @@
 
     <color name="text_color">#252525</color>
 
-
-    <color name="grey">#434343</color>
+    <color name="grey">#3C403D</color>
     <color name="dark_orange">#A55903</color>
-    <color name="dark_status_bar">#434343</color>
+    <color name="dark_status_bar">#272525</color>
 
 
 </resources>

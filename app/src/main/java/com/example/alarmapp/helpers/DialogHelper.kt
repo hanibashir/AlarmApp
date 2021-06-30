@@ -1,4 +1,4 @@
-package com.example.alarmapp.utils
+package com.example.alarmapp.helpers
 
 import android.content.Context
 import com.example.alarmapp.R
@@ -12,11 +12,11 @@ object DialogHelper {
             .setMessage("Are you sure you want delete all alarms?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, _ ->
-                dialogInterface.onRespond(1)
+                dialogInterface.onRespond(true)
             }
             .setNegativeButton("No") { dialog, _ ->
                 // else dismiss the dialog
-                dialogInterface.onRespond(0)
+                dialogInterface.onRespond(false)
                 dialog.dismiss()
             }
             .create()
@@ -24,6 +24,6 @@ object DialogHelper {
     }
 
     interface DialogInterface {
-        fun onRespond(respond: Int)
+        fun onRespond(respond: Boolean)
     }
 }

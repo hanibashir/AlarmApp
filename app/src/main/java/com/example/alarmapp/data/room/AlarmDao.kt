@@ -1,9 +1,8 @@
-package com.example.alarmapp.data.database
+package com.example.alarmapp.data.room
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
-import com.example.alarmapp.data.models.AlarmItem
+import com.example.alarmapp.data.AlarmItem
 
 @Dao
 interface AlarmDao {
@@ -23,8 +22,11 @@ interface AlarmDao {
     @Query("DELETE FROM `alarm_table`")
     suspend fun deleteAllAlarms()
 
-    @Query("SELECT * FROM alarm_table WHERE hour LIKE :hour AND minute LIKE :minute AND alarmDay LIKE :alarmDay")
-    fun getAlarm(hour: Int, minute: Int, alarmDay: String): LiveData<AlarmItem?>
+    @Query("SELECT * FROM alarm_table WHERE alarmId LIKE :id")
+    fun getAlarm(id: Long): LiveData<AlarmItem>
+
+    @Query("SELECT * FROM alarm_table WHERE alarmId LIKE :id")
+    fun getAlarmForBroadcast(id: Long): AlarmItem
 
     @Query("SELECT * FROM `alarm_table` ORDER BY currentTime DESC")
     fun getAllAlarms(): LiveData<List<AlarmItem>>

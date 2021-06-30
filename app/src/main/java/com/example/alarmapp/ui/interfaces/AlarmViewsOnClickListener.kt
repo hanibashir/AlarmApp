@@ -1,9 +1,8 @@
 package com.example.alarmapp.ui.interfaces
 
-import android.view.MenuItem
-import com.example.alarmapp.data.models.AlarmItem
+import android.view.View
 
 interface AlarmViewsOnClickListener {
     fun onSwitchToggle(position: Int)
-    fun onOptionsMenuItemClicked(position: Int, menuItem: MenuItem)
+    fun onItemButtonClicked(btn: View, position: Int)
 }

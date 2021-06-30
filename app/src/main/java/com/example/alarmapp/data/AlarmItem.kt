@@ -1,4 +1,4 @@
-package com.example.alarmapp.data.models
+package com.example.alarmapp.data
 
 import android.os.Parcelable
 import androidx.room.Entity
@@ -19,5 +19,13 @@ data class AlarmItem(
     var minute: Int,
     var alarmDay: String,
     var isScheduled: Boolean = true,
+    var isRepeating: Boolean = false,
+    var isMonday: Boolean = false,
+    var isTuesday: Boolean = false,
+    var isWednesday: Boolean = false,
+    var isThursday: Boolean = false,
+    var isFriday: Boolean = false,
+    var isSaturday: Boolean = false,
+    var isSunday: Boolean = false,
     val currentTime: Long
 ) : Parcelable

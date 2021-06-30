@@ -1,8 +1,7 @@
 package com.example.alarmapp.utils
 
-import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
-import com.example.alarmapp.data.models.AlarmItem
+import com.example.alarmapp.data.AlarmItem
 
 private const val TAG = "diffUtil"
 

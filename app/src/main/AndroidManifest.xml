@@ -4,7 +4,8 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="false"
@@ -13,18 +14,37 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AlarmApp">
-        <activity android:name=".ui.activities.RingActivity" />
+
+        <!-- Main Activity-->
         <activity android:name=".ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SET_ALARM" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SHOW_ALARMS" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <receiver android:name=".broadcastreceivers.AlarmReceiver" />
+        <!-- Ring Activity-->
+        <activity
+            android:name=".ui.activities.RingActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/FullScreen"/>
 
+        <!-- Setting Activity-->
+<!--        <activity android:name=".ui.activities.SettingsActivity" />-->
+
+        <!-- Broadcast Receiver -->
+        <receiver android:name=".broadcastreceivers.AlarmReceiver" />
+        <!-- Service -->
         <service android:name=".services.AlarmService" />
+
     </application>
 
 </manifest>

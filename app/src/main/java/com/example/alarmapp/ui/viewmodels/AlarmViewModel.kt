@@ -1,11 +1,8 @@
 package com.example.alarmapp.ui.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.alarmapp.data.database.AlarmDatabase
-import com.example.alarmapp.data.models.AlarmItem
+import com.example.alarmapp.data.AlarmItem
 import com.example.alarmapp.data.repository.AlarmRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,8 +13,8 @@ class AlarmViewModel(private val repository: AlarmRepository) : ViewModel() {
 
     fun alarms() = repository.alarmsList()
 
-    fun getAlarm(hour: Int, minute: Int, alarmDay: String) =
-        repository.getAlarm(hour, minute, alarmDay)
+    fun getAlarm(id: Long) =
+        repository.getAlarm(id)
 
     fun insertAlarm(alarmItem: AlarmItem) {
         // do the work in background thread with coroutines

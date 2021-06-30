@@ -1,13 +1,15 @@
 package com.example.alarmapp.data.repository
 
-import com.example.alarmapp.data.database.AlarmDao
-import com.example.alarmapp.data.models.AlarmItem
+import com.example.alarmapp.data.room.AlarmDao
+import com.example.alarmapp.data.AlarmItem
 
 class AlarmRepository(private var alarmDao: AlarmDao) {
 
     fun alarmsList() = alarmDao.getAllAlarms()
 
-    fun getAlarm(hour: Int, minute: Int, alarmDay: String) = alarmDao.getAlarm(hour, minute, alarmDay)
+    fun getAlarm(id: Long) = alarmDao.getAlarm(id)
+
+    fun getAlarmForBroadcast(id: Long) = alarmDao.getAlarmForBroadcast(id)
 
     suspend fun insert(alarmItem: AlarmItem) = alarmDao.insert(alarmItem)
 

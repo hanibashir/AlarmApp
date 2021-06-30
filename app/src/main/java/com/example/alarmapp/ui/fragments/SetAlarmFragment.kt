@@ -5,19 +5,25 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.alarmapp.R
-import com.example.alarmapp.data.database.AlarmDatabase
-import com.example.alarmapp.data.models.AlarmItem
+import com.example.alarmapp.data.AlarmItem
 import com.example.alarmapp.data.repository.AlarmRepository
+import com.example.alarmapp.data.room.AlarmDatabase
 import com.example.alarmapp.databinding.FragmentSetAlarmBinding
-import com.example.alarmapp.ui.AlarmViewModelFactory
+import com.example.alarmapp.ui.viewmodels.AlarmViewModelFactory
 import com.example.alarmapp.ui.viewmodels.AlarmViewModel
-import com.example.alarmapp.utils.AlarmHelper
+import com.example.alarmapp.helpers.AlarmHelper
 import com.example.alarmapp.utils.CalendarUtil
+import com.example.alarmapp.utils.Constants.Companion.FRIDAY
+import com.example.alarmapp.utils.Constants.Companion.MONDAY
+import com.example.alarmapp.utils.Constants.Companion.SATURDAY
+import com.example.alarmapp.utils.Constants.Companion.SUNDAY
+import com.example.alarmapp.utils.Constants.Companion.THURSDAY
+import com.example.alarmapp.utils.Constants.Companion.TUESDAY
+import com.example.alarmapp.utils.Constants.Companion.WEDNESDAY
 import com.example.alarmapp.utils.Messages
 import com.example.alarmapp.utils.TimePickerUtil
 import java.util.*
@@ -30,6 +36,7 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentSetAlarmBinding
     private lateinit var viewModel: AlarmViewModel
     private val args: SetAlarmFragmentArgs by navArgs()
+    private var isRepeating = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,13 +44,11 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
     ): View {
 
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_set_alarm, container, false)
+        binding = FragmentSetAlarmBinding.inflate(inflater, container, false)
 
-        // if is edit case get arguments and set the values to views
-        if (args.alarmItem != null) {
-            binding.etAlarmLabel.setText(args.alarmItem?.alarmLabel)
-            TimePickerUtil.setTime(binding.timePicker, args.alarmItem?.hour, args.alarmItem?.minute)
-        }
+        // if is edit case get arguments
+        // and set the values to views
+        editAlarm()
 
         // get a reference to the application context. we need application context to
         // create database instance
@@ -57,6 +62,10 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
         // initialize the ViewModel class
         viewModel = ViewModelProvider(this, viewModelFactory).get(AlarmViewModel::class.java)
 
+        // toolbar
+        binding.setAlarmFragmentToolbar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_setAlarmFragment_to_alarmsFragment)
+        }
 
         // if the buttons are clicked use the implemented (View.OnClickListener) interface
         binding.btnSetAlarm.setOnClickListener(this)
@@ -67,64 +76,99 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
         return binding.root
     }
 
-
-    override fun onClick(v: View?) {
-
-        when (v) {
-            // if is repeat alarm
-            binding.cbRepeat -> setRepeat(binding.cbRepeat.isChecked)
-            // if btn set alarm clicked
-            binding.btnSetAlarm -> setAlarm(args.alarmItem)
-            // if btn cancel clicked
-            binding.btnCancelAndClose -> cancelAndClose()
+    private fun editAlarm() {
+        if (args.alarmItem != null) {
+            binding.etAlarmLabel.setText(args.alarmItem?.alarmLabel)
+            TimePickerUtil.setTime(binding.timePicker, args.alarmItem?.hour, args.alarmItem?.minute)
+            if (args.alarmItem!!.isRepeating) {
+                // repeat check box
+                binding.cbRepeat.isChecked = args.alarmItem!!.isRepeating
+                isRepeating = daysChecked()
+                // days check boxes
+                binding.cbMo.isChecked = args.alarmItem!!.isMonday
+                binding.cbTu.isChecked = args.alarmItem!!.isTuesday
+                binding.cbWe.isChecked = args.alarmItem!!.isWednesday
+                binding.cbTh.isChecked = args.alarmItem!!.isThursday
+                binding.cbFr.isChecked = args.alarmItem!!.isFriday
+                binding.cbSa.isChecked = args.alarmItem!!.isSaturday
+                binding.cbSu.isChecked = args.alarmItem!!.isSunday
+                binding.repeatDaysLinearLayout.visibility = View.VISIBLE
+            } else {
+                binding.repeatDaysLinearLayout.visibility = View.GONE
+            }
         }
     }
 
+    override fun onClick(v: View?) {
+        // repeat check boxes
+        val repeatCheckBox = binding.cbRepeat
+        val daysLayout = binding.repeatDaysLinearLayout
+        // buttons
+        val btnSetAlarm = binding.btnSetAlarm
+        val btnClose = binding.btnCancelAndClose
 
-    private fun setRepeat(isChecked: Boolean) {
-        // change days layout visibility
-        if (isChecked)
-            binding.repeatDaysLinearLayout.visibility = View.VISIBLE
-        else
-            binding.repeatDaysLinearLayout.visibility = View.GONE
+        when (v) {
+            // if repeat check box checked
+            repeatCheckBox -> {
+                if (repeatCheckBox.isChecked) {
+                    isRepeating = true
+                    // show days check boxes layout
+                    daysLayout.visibility = View.VISIBLE
+                } else {
+                    isRepeating = false
+                    clearDaysBoxes()
+                    // hide days check boxes layout
+                    daysLayout.visibility = View.GONE
+                }
+            }
+            // if btn set alarm clicked
+            btnSetAlarm -> setInsertAlarm(args.alarmItem)
+            // if btn cancel clicked
+            btnClose -> cancelAndClose()
+        }
     }
 
-    private fun setAlarm(alarmItem: AlarmItem?) {
+    private fun setInsertAlarm(alarmItem: AlarmItem?) {
+        val calendarUtil = CalendarUtil()
         val alarmHelper = AlarmHelper(requireContext())
         // alarm title
         var label = binding.etAlarmLabel.text.toString()
-        if (label.isBlank()) label = "No Label"
+        if (label.isBlank()) label = getString(R.string.no_label)
         // get time picker time
         val (hour, minute) = TimePickerUtil.getTime(binding.timePicker)
-        // format alarm time
-        val alarmTimeString = CalendarUtil().formatCalendarTime(hour, minute)
         // set calendar time
-        val alarmDate = CalendarUtil().setCalendar(hour, minute, 0)
+        val alarmDate = calendarUtil.setCalendar(hour, minute)
         // if alarm time is passed add one day
         if (alarmDate.before(Calendar.getInstance())) alarmDate.add(Calendar.DATE, 1)
         // get the alarm day
-        val alarmDay = CalendarUtil().getAlarmDay(alarmDate)
+        val alarmDay = calendarUtil.getAlarmDay(requireContext(), alarmDate)
         // set random number for the alarm id field in database
 
-        if (alarmItem == null) insertAndScheduleAlarm(label, hour, minute, alarmDay, alarmHelper)
-        else updateAndScheduleAlarm(alarmItem, label, hour, minute, alarmDay, alarmHelper)
-
-
+        // insert new alarm if alarm item null ...
+        if (alarmItem == null)
+            insertScheduleAlarm(label, hour, minute, alarmDay, alarmHelper)
+        // or update existing alarm item
+        else updateScheduleAlarm(alarmItem, label, hour, minute, alarmDay, alarmHelper)
 
         // navigate back to the main fragment
-        findNavController().navigate(R.id.action_setAlarmFragment_to_mainFragment)
-
+        findNavController().navigate(R.id.action_setAlarmFragment_to_alarmsFragment)
     }
 
-    private fun insertAndScheduleAlarm(
+    private fun insertScheduleAlarm(
         label: String,
         hour: Int,
         minute: Int,
         alarmDay: String,
         alarmHelper: AlarmHelper
     ) {
-        val alarmId = Random.nextInt(Int.MAX_VALUE).toLong()
+        // random id for alarm item
+        val alarmId = Random.nextLong(1L, Long.MAX_VALUE)
+        val repeatDays = getDaysCheckBoxesStates()
 
+        // if no day checked set isRepeating to false
+        isRepeating = daysChecked()
+
+        // create alarm item
         val alarmItem = AlarmItem(
             alarmId,
             label,
@@ -132,19 +176,27 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
             minute,
             alarmDay,
             true,
+            isRepeating,
+            repeatDays[MONDAY]!!,
+            repeatDays[TUESDAY]!!,
+            repeatDays[WEDNESDAY]!!,
+            repeatDays[THURSDAY]!!,
+            repeatDays[FRIDAY]!!,
+            repeatDays[SATURDAY]!!,
+            repeatDays[SUNDAY]!!,
             System.currentTimeMillis()
         )
 
         // schedule alarm
         alarmHelper.scheduleAlarm(alarmItem)
 
-        // pass the alarm object to view model
+        // insert alarm item into database
         viewModel.insertAlarm(alarmItem)
 
-        Messages.showScheduledMessage(binding.root, alarmItem, getString(R.string.scheduled))
+        Messages.showScheduledMessage(binding.root, alarmItem, context)
     }
 
-    private fun updateAndScheduleAlarm(
+    private fun updateScheduleAlarm(
         alarmItem: AlarmItem, label: String,
         hour: Int,
         minute: Int,
@@ -154,22 +206,74 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
         // cancel old alarm
         alarmHelper.cancelAlarm(alarmItem)
 
+        val repeatDays = getDaysCheckBoxesStates()
+        // update old alarm item with new values
         alarmItem.alarmLabel = label
         alarmItem.hour = hour
         alarmItem.minute = minute
         alarmItem.alarmDay = alarmDay
 
+        // if no day checked set isRepeating to false
+        alarmItem.isRepeating = daysChecked()
+
+        if (alarmItem.isRepeating) {
+            alarmItem.isMonday = repeatDays[MONDAY]!!
+            alarmItem.isTuesday = repeatDays[TUESDAY]!!
+            alarmItem.isWednesday = repeatDays[WEDNESDAY]!!
+            alarmItem.isThursday = repeatDays[THURSDAY]!!
+            alarmItem.isFriday = repeatDays[FRIDAY]!!
+            alarmItem.isSaturday = repeatDays[SATURDAY]!!
+            alarmItem.isSunday = repeatDays[SUNDAY]!!
+        } else {
+            alarmItem.isMonday = false
+            alarmItem.isTuesday = false
+            alarmItem.isWednesday = false
+            alarmItem.isThursday = false
+            alarmItem.isFriday = false
+            alarmItem.isSaturday = false
+            alarmItem.isSunday = false
+        }
+
         // schedule alarm
         alarmHelper.scheduleAlarm(alarmItem)
-
-        // update alarm item
+        // update alarm item in database
         viewModel.updateAlarm(alarmItem)
-        Messages.showScheduledMessage(binding.root, alarmItem, getString(R.string.scheduled))
+        // show message
+        Messages.showScheduledMessage(binding.root, alarmItem, context)
     }
 
+    private fun getDaysCheckBoxesStates(): MutableMap<String, Boolean> {
+        val boxesList = mutableMapOf<String, Boolean>()
+
+        boxesList[MONDAY] = binding.cbMo.isChecked
+        boxesList[TUESDAY] = binding.cbTu.isChecked
+        boxesList[WEDNESDAY] = binding.cbWe.isChecked
+        boxesList[THURSDAY] = binding.cbTh.isChecked
+        boxesList[FRIDAY] = binding.cbFr.isChecked
+        boxesList[SATURDAY] = binding.cbSa.isChecked
+        boxesList[SUNDAY] = binding.cbSu.isChecked
+
+        return boxesList
+    }
+
+    private fun clearDaysBoxes() {
+        binding.cbMo.isChecked = false
+        binding.cbTu.isChecked = false
+        binding.cbWe.isChecked = false
+        binding.cbTh.isChecked = false
+        binding.cbFr.isChecked = false
+        binding.cbSa.isChecked = false
+        binding.cbSu.isChecked = false
+    }
+
+    private fun daysChecked(): Boolean {
+        for ((key, value) in getDaysCheckBoxesStates())
+            if (value) return true
+        return false
+    }
 
     // if cancel button clicked, navigate back to the main fragment and
     // we need to set pop to and inclusive in the navigation graph
     private fun cancelAndClose() =
-        findNavController().navigate(R.id.action_setAlarmFragment_to_mainFragment)
+        findNavController().navigate(R.id.action_setAlarmFragment_to_alarmsFragment)
 }
