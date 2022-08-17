@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/set_alarm_fragment_toolbar"
+            android:id="@+id/setAlarmFragmentToolbar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -133,21 +133,21 @@
                 app:layout_constraintTop_toBottomOf="@+id/cb_repeat">
 
                 <CheckBox
-                    android:id="@+id/cb_mo"
+                    android:id="@+id/cbMo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/monday" />
 
                 <CheckBox
-                    android:id="@+id/cb_tu"
+                    android:id="@+id/cbTu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tuesday" />
 
                 <CheckBox
-                    android:id="@+id/cb_we"
+                    android:id="@+id/cbWe"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -162,14 +162,14 @@
                     android:text="@string/thursday" />
 
                 <CheckBox
-                    android:id="@+id/cb_fr"
+                    android:id="@+id/cbFr"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/friday" />
 
                 <CheckBox
-                    android:id="@+id/cb_sa"
+                    android:id="@+id/cbSa"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -178,7 +178,7 @@
 
 
                 <CheckBox
-                    android:id="@+id/cb_su"
+                    android:id="@+id/cbSu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -199,7 +199,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/repeat_days_linear_layout" />
 
             <Button
-                android:id="@+id/btn_cancel_and_close"
+                android:id="@+id/btnCancelAndClose"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

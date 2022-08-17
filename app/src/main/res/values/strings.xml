@@ -2,9 +2,7 @@
 <resources>
     <string name="app_name">AlarmApp</string>
 
-    <string name="img_day_or_night">Toolbar Image</string>
     <string name="fab_add_new_alarm">Set New Alarm</string>
-    <string name="tv_next_alarm">Next Alarm at: Mon 15:15</string>
     <string name="alarm_time">15:15</string>
     <string name="tv_set_new_alarm">Set New Alarm</string>
     <string name="tv_alarm_time_text">Choose Time:</string>
@@ -23,12 +21,7 @@
     <string name="alarm_label">Label:</string>
     <string name="repeat">Repeat</string>
     <string name="alarm_no_label">No Label</string>
-    <string name="alarm_set_for">Alarm Set For:</string>
-    <string name="action">Action</string>
-    <string name="delete_alarm">Delete</string>
     <string name="delete_all_alarm">Delete All</string>
-    <string name="edit_alarm">Edit</string>
-    <string name="three_vertical_dots">⋮</string>
     <string name="tv_no_alarms_text">No Scheduled Alarms. Use the add button below to add new alarm.</string>
     <string name="dismiss">Dismiss</string>
     <string name="snooze">Snooze</string>
@@ -46,10 +39,6 @@
 
 
     <!-- Ringtone -->
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-    <string name="key_alarm_ringtone">key_alarm_ringtone</string>
-    <string name="summary_choose_ringtone">Choose notification sound</string>
 
     <!-- Vibration -->
     <string name="title_vibrate">Vibrate</string>
@@ -77,31 +66,23 @@ optio, eaque rerum! Provident similique accusantium nemo autem.</string>
     <string name="summary_support">Got any queries? We are happy to help!</string>
 
     <string name="title_faq">FAQ</string>
-    <string name="url_faq" />
     <string name="summary_faq">View frequently asked questions</string>
 
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="url_privacy" />
     <string name="title_terms">Terms &amp; Conditions</string>
-    <string name="url_terms" />
 
     <string name="delete_empty_list">No alarms to delete</string>
     <string name="alarm_deleted">Alarm Deleted</string>
-    <string name="scheduled">scheduled</string>
     <string name="alarm_cancelled">Alarm Cancelled</string>
     <string name="delete_all">All alarms deleted</string>
     <string name="alarm_app_channel_name">AlarmApp Channel</string>
     <string name="alarm_app_channel_description">Channel to send alarm notification for AlarmApp</string>
-    <string name="iv_ring_snooze_dismiss">Image to dismiss or snooze alarm</string>
-    <string name="content_description_snooze">Snooze</string>
-    <string name="content_description_dismiss">Dismiss</string>
     <string name="alarm_dismissed">Alarm Dismissed</string>
     <string name="alarm_scheduled">Alarm scheduled for %1$s at: %2$s</string>
 
     <string name="ring_image">Ringing Image</string>
     <string name="snoozed_for">Snoozed for: %1$d minutes.</string>
     <string name="set_alarm_fragment_title">Add New Alarm</string>
-    <string name="switch_on_off">On/Off</string>
 
     <string name="remain_time_full">%1$d hours and %2$d minutes from now</string>
     <string name="remain_time_hour_full">%1$d hour and %2$d minutes from now</string>

@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group
-        android:id="@+id/drawer_group_alarm"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/drawer_alarms_home"
             android:icon="@drawable/ic_home"
@@ -20,11 +18,9 @@
     <item android:title="@string/communicate">
         <menu>
             <item
-                android:id="@+id/drawer_share"
                 android:icon="@drawable/ic_share"
                 android:title="@string/share" />
             <item
-                android:id="@+id/drawer_rate"
                 android:icon="@drawable/ic_rate_review"
                 android:title="@string/rate" />
         </menu>

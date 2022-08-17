@@ -14,13 +14,11 @@
         tools:context=".ui.fragments.AlarmsFragment">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:liftOnScroll="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -39,7 +37,7 @@
                     app:navigationIcon="@drawable/ic_menu" />
 
                 <ImageView
-                    android:id="@+id/iv_alarms"
+                    android:id="@+id/ivAlarms"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="@null"
@@ -50,7 +48,6 @@
 
                 <!-- 12 Hour Mode -->
                 <TextClock
-                    android:id="@+id/text_clock_12"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:format12Hour="hh:mm:ss a \n EEEE, dd.M.yyyy"
@@ -90,7 +87,7 @@
             tools:listitem="@layout/alarm_item" />
 
         <TextView
-            android:id="@+id/tv_no_alarms"
+            android:id="@+id/tvNoAlarms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -108,7 +105,7 @@
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_new_alarm"
+            android:id="@+id/fabAddNewAlarm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"

@@ -11,7 +11,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.alarmapp"
+        applicationId "com.hblab.alarmapp"
         minSdkVersion 21
         targetSdkVersion 32
         versionCode 1
@@ -38,7 +38,7 @@ android {
     buildFeatures {
         viewBinding true
     }
-    namespace 'com.example.alarmapp'
+    namespace 'com.hblab.alarmapp'
 }
 
 dependencies {
