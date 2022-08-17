@@ -26,16 +26,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.*
 
-const val TAG = "alarmService"
-
 class AlarmService : Service() {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        // by default service run on UI thread, this can crash the app,
-        // because of that we need to run it on separate thread
+        // running the service on separate thread
         Thread {
             //Log.d(CURRENT_THREAD_ID, "onStartCommand Thread: ${Thread.currentThread().id}")
 
@@ -111,7 +108,7 @@ class AlarmService : Service() {
                     val alarmItem =
                         repository.getAlarmForBroadcast(intent.getLongExtra(ALARM_ID, 0))
                     // update alarm item in database set isScheduled = false
-                    val alarmId = intent.getLongExtra(ALARM_ID, 0)
+                    //val alarmId = intent.getLongExtra(ALARM_ID, 0)
 
                     updateIsScheduled(alarmItem)
 

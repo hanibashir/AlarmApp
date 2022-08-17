@@ -10,8 +10,6 @@ import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.alarmapp.R
@@ -24,6 +22,7 @@ import com.example.alarmapp.utils.Constants.Companion.ALARM_ID
 import com.example.alarmapp.utils.Constants.Companion.ALARM_LABEL
 import com.example.alarmapp.utils.Constants.Companion.ALARM_TIME
 import com.example.alarmapp.utils.Constants.Companion.CHANNEL_ID
+import com.example.alarmapp.utils.updatePendingIntentFlag
 
 
 class NotificationHelper(private val context: Context) {
@@ -141,7 +140,7 @@ class NotificationHelper(private val context: Context) {
             context,
             0,
             snoozeIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            updatePendingIntentFlag()
         )
 
         // dismiss intent
@@ -154,7 +153,7 @@ class NotificationHelper(private val context: Context) {
             context,
             0,
             dismissIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT // override snooze pending intent
+            updatePendingIntentFlag()// override snooze pending intent
         )
 
         // open ring activity intent
@@ -168,7 +167,7 @@ class NotificationHelper(private val context: Context) {
             context,
             0,
             ringActivityIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT // override dismiss pending intent
+            updatePendingIntentFlag() // override dismiss pending intent
         )
 
         // return the three pending intents

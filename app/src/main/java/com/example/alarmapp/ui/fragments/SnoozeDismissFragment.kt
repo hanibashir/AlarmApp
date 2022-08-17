@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +15,7 @@ import android.widget.TextView
 import com.example.alarmapp.R
 import com.example.alarmapp.databinding.FragmentSnoozeDismissBinding
 import com.example.alarmapp.utils.Constants.Companion.SNOOZE_TIME
-import com.example.alarmapp.utils.Extensions.isDarkTheme
-
-private const val TAG = "snoozeDismissFragment"
+import com.example.alarmapp.utils.isDarkTheme
 
 class SnoozeDismissFragment : Fragment() {
 

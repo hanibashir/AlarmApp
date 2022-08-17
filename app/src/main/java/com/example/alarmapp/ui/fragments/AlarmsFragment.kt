@@ -3,7 +3,6 @@ package com.example.alarmapp.ui.fragments
 import android.app.AlarmManager
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.Toolbar
@@ -25,13 +24,11 @@ import com.example.alarmapp.ui.adapters.AlarmsListAdapter
 import com.example.alarmapp.ui.interfaces.AlarmViewsOnClickListener
 import com.example.alarmapp.ui.viewmodels.AlarmViewModel
 import com.example.alarmapp.ui.viewmodels.AlarmViewModelFactory
-import com.example.alarmapp.utils.Extensions.isDarkTheme
 import com.example.alarmapp.utils.Messages
+import com.example.alarmapp.utils.isDarkTheme
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 
-
-private const val TAG = "mainFragment"
 
 class AlarmsFragment : Fragment(), AlarmViewsOnClickListener, Toolbar.OnMenuItemClickListener {
 

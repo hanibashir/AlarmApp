@@ -2,10 +2,9 @@ package com.example.alarmapp.data.sharedpreferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.preference.PreferenceManager
 import com.example.alarmapp.R
-import com.example.alarmapp.utils.Extensions.snoozeTimeInt
+import com.example.alarmapp.utils.snoozeTimeInt
 
 class Storage(context: Context) {
 

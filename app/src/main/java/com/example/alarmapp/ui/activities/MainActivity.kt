@@ -7,9 +7,7 @@ import androidx.navigation.findNavController
 import com.example.alarmapp.R
 import com.example.alarmapp.data.sharedpreferences.Storage
 import com.example.alarmapp.databinding.ActivityMainBinding
-import com.example.alarmapp.utils.Extensions.isDarkTheme
-
-private const val TAG = "mainActivity"
+import com.example.alarmapp.utils.isDarkTheme
 
 class MainActivity : AppCompatActivity() {
 

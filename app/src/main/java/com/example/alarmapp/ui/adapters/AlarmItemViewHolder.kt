@@ -1,6 +1,5 @@
 package com.example.alarmapp.ui.adapters
 
-import android.app.AlarmManager
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +14,8 @@ import com.example.alarmapp.R
 import com.example.alarmapp.data.AlarmItem
 import com.example.alarmapp.ui.interfaces.AlarmViewsOnClickListener
 import com.example.alarmapp.utils.CalendarUtil
-import com.example.alarmapp.utils.Extensions.isDarkTheme
+import com.example.alarmapp.utils.applyBackground
+import com.example.alarmapp.utils.isDarkTheme
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 // View Holder class
@@ -74,7 +73,7 @@ class AlarmItemViewHolder private constructor(itemView: View) : RecyclerView.Vie
                 // set alarm label text view value
                 tvLabel.text = (alarmItem.alarmLabel)
                 // change scheduled days background color
-                changeDayBackground(context, alarmItem)
+                changeDayBackground(alarmItem)
                 // show repeating days layout
                 repeatLayout.visibility = View.VISIBLE
 
@@ -132,27 +131,19 @@ class AlarmItemViewHolder private constructor(itemView: View) : RecyclerView.Vie
 
     }
 
-    private fun changeDayBackground(context: Context, alarmItem: AlarmItem) {
+    private fun changeDayBackground(alarmItem: AlarmItem) {
 //        val bgColor = if (Extras.isDarkTheme(context))
 //            ContextCompat.getColor(context, R.color.dark_orange)
 //        else ContextCompat.getColor(context, R.color.orange)
 
         if (alarmItem.isRepeating) {
-            if (alarmItem.isMonday) monday.background =
-                AppCompatResources.getDrawable(context, R.drawable.day_bg)
-            if (alarmItem.isTuesday) tuesday.background =
-                AppCompatResources.getDrawable(context, R.drawable.day_bg)
-            if (alarmItem.isWednesday) wednesday.background =
-                AppCompatResources.getDrawable(context, R.drawable.day_bg)
-            if (alarmItem.isThursday) thursday.background =
-                AppCompatResources.getDrawable(context, R.drawable.day_bg)
-            if (alarmItem.isFriday) friday.background =
-                AppCompatResources.getDrawable(context, R.drawable.day_bg)
-            if (alarmItem.isSaturday) saturday.background =
-                AppCompatResources.getDrawable(context, R.drawable.day_bg)
-            if (alarmItem.isSunday) sunday.background =
-                AppCompatResources.getDrawable(context, R.drawable.day_bg)
-
+                if(alarmItem.isMonday) monday.applyBackground()
+                if(alarmItem.isTuesday) tuesday.applyBackground()
+                if(alarmItem.isWednesday) wednesday.applyBackground()
+                if(alarmItem.isThursday) thursday.applyBackground()
+                if(alarmItem.isFriday) friday.applyBackground()
+                if(alarmItem.isSaturday) saturday.applyBackground()
+                if(alarmItem.isSunday) sunday.applyBackground()
         }
     }
 

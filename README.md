@@ -31,8 +31,6 @@ Simple Android-Kotlin alarm app.
 <img src="https://picc.io/rmpf4iM.png" width="250" height="500">
 <img src="https://picc.io/s6N4huC.png" width="250" height="500">
 
-## Contributing
-Pull requests are welcome.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

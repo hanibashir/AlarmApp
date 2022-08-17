@@ -4,15 +4,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.util.Log
+import android.os.Build
+import android.os.Build.VERSION_CODES.S
 import androidx.core.app.AlarmManagerCompat
-import androidx.fragment.app.FragmentActivity
-import com.example.alarmapp.R
 import com.example.alarmapp.broadcastreceivers.AlarmReceiver
 import com.example.alarmapp.data.AlarmItem
-import com.example.alarmapp.services.TAG
-import com.example.alarmapp.ui.fragments.SnoozeDismissFragment
 import com.example.alarmapp.utils.CalendarUtil
 import com.example.alarmapp.utils.Constants.Companion.ACTION_ALARM_RECEIVER
 import com.example.alarmapp.utils.Constants.Companion.ALARM_ID
@@ -22,7 +18,6 @@ import com.example.alarmapp.utils.Constants.Companion.FRIDAY
 import com.example.alarmapp.utils.Constants.Companion.MONDAY
 import com.example.alarmapp.utils.Constants.Companion.REPEATING
 import com.example.alarmapp.utils.Constants.Companion.SATURDAY
-import com.example.alarmapp.utils.Constants.Companion.SNOOZE_TIME
 import com.example.alarmapp.utils.Constants.Companion.SUNDAY
 import com.example.alarmapp.utils.Constants.Companion.THURSDAY
 import com.example.alarmapp.utils.Constants.Companion.TUESDAY
@@ -77,6 +72,7 @@ class AlarmHelper(private val context: Context) {
 
     // cancel alarm and return alarm item after updating it,
     // to update the database in MainFragment
+
     fun cancelAlarm(alarmItem: AlarmItem): AlarmItem {
         // cancel the pending intent
         alarmManager.cancel(alarmPendingIntent(alarmItem))
@@ -86,6 +82,7 @@ class AlarmHelper(private val context: Context) {
     }
 
     // return alarm pending intent
+
     private fun alarmPendingIntent(alarmItem: AlarmItem): PendingIntent {
         // format alarm time and return it as string like: 08:00am or 20:00 depending
         // on the user device settings
@@ -114,7 +111,10 @@ class AlarmHelper(private val context: Context) {
             context,
             pendingIntentRequestCode,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            if (Build.VERSION.SDK_INT >= S)
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            else
+                PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 
