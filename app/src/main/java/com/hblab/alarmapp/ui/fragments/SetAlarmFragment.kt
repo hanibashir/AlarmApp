@@ -79,7 +79,7 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
     private fun editAlarm() {
         if (args.alarmItem != null) {
             binding.etAlarmLabel.setText(args.alarmItem?.alarmLabel)
-            TimePickerUtil.setTime(binding.timePicker, args.alarmItem?.hour, args.alarmItem?.minute)
+            TimePickerUtil().setTime(binding.timePicker, args.alarmItem?.hour, args.alarmItem?.minute)
             if (args.alarmItem!!.isRepeating) {
                 // repeat check box
                 binding.cbRepeat.isChecked = args.alarmItem!!.isRepeating
@@ -135,7 +135,7 @@ class SetAlarmFragment : Fragment(), View.OnClickListener {
         var label = binding.etAlarmLabel.text.toString()
         if (label.isBlank()) label = getString(R.string.no_label)
         // get time picker time
-        val (hour, minute) = TimePickerUtil.getTime(binding.timePicker)
+        val (hour, minute) = TimePickerUtil().getTime(binding.timePicker)
         // set calendar time
         val alarmDate = calendarUtil.setCalendar(hour, minute)
         // if alarm time is passed add one day

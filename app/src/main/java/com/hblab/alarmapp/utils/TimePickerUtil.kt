@@ -3,7 +3,7 @@ package com.hblab.alarmapp.utils
 import android.os.Build
 import android.widget.TimePicker
 
-object TimePickerUtil {
+class TimePickerUtil {
 
     fun getTime(timePicker: TimePicker): Pair<Int, Int> {
 
