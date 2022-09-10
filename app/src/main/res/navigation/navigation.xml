@@ -14,7 +14,9 @@
             app:destination="@id/setAlarmFragment" />
         <argument
             android:name="alarmItem"
-            app:argType="com.hblab.alarmapp.data.AlarmItem" />
+            app:argType="com.hblab.alarmapp.data.model.AlarmItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
         <action
             android:id="@+id/action_alarmsFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
@@ -31,7 +33,7 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="alarmItem"
-            app:argType="com.hblab.alarmapp.data.AlarmItem"
+            app:argType="com.hblab.alarmapp.data.model.AlarmItem"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
