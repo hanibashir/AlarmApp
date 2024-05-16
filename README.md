@@ -3,10 +3,13 @@
 Simple Android-Kotlin alarm app.
 
 ## Features
-* Set the alarm once or repeating alarm for specific days of the week.
-* Add an unlimited number of alarms.
-* Delete a specific alarm or delete all alarms at once.
-* Settings screen to switch between night mode and day mode, choose snooze time, and vibration.
+1. Set a one-time alarm or a repeating alarm for specific days of the week.
+2. Add an unlimited number of alarms.
+3. Delete a specific alarm or delete all alarms at once.
+4. Access a settings screen to:
+    - Switch between night mode and day mode.
+    - Choose the snooze duration.
+    - Enable or disable vibration.
 
 ## Screenshots - Dark Mode
 <table>
